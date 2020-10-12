@@ -1,14 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.MainMenuFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/main_menu_quiz_text"
+        style="@style/MainMenuTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_menu_tet_quiz"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_menu_guideline_horizontal_35"/>
 
-</FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/main_menu_guideline_horizontal_35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/main_menu_guideline_vertical_30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <Button
+        android:id="@+id/main_menu_play_button"
+        style="@style/MainMenuButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/main_menu_play_button"
+        app:layout_constraintTop_toBottomOf="@id/main_menu_guideline_horizontal_35"
+        app:layout_constraintStart_toEndOf="@id/main_menu_guideline_vertical_30"
+        app:layout_constraintEnd_toEndOf="@id/main_menu_guideline_vertical_70"
+        app:layout_constraintBottom_toTopOf="@id/main_menu_exit_button"/>
+
+    <Button
+        android:id="@+id/main_menu_exit_button"
+        style="@style/MainMenuButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/main_menu_exit_button"
+        app:layout_constraintTop_toBottomOf="@id/main_menu_play_button"
+        app:layout_constraintStart_toEndOf="@id/main_menu_guideline_vertical_30"
+        app:layout_constraintEnd_toEndOf="@id/main_menu_guideline_vertical_70"
+        app:layout_constraintBottom_toTopOf="@id/main_menu_guideline_horizontal_65"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/main_menu_guideline_vertical_70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/main_menu_guideline_horizontal_65"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <TextView
+        android:id="@+id/main_menu_category_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/main_menu_category_text"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_menu_guideline_vertical_70"
+        app:layout_constraintStart_toStartOf="@+id/main_menu_guideline_vertical_30"
+        app:layout_constraintTop_toTopOf="@+id/main_menu_guideline_horizontal_65"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <Button
+        android:id="@+id/main_menu_category_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Машины"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_menu_category_text" />
+
+    <ProgressBar
+        android:id="@+id/main_menu_progressBar"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

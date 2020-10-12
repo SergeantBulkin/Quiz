@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Quiz</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--MainMenuFragment-->
+    <string name="main_menu_tet_quiz">Qiuz</string>
+    <string name="main_menu_play_button">Играть</string>
+    <string name="main_menu_exit_button">Выход</string>
+    <string name="main_menu_category_text">Категория</string>
 </resources>
