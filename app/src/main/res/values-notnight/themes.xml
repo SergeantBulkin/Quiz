@@ -1,10 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/purple</item>
         <item name="colorPrimaryVariant">@color/purple</item>
-        <item name="android:statusBarColor">@color/purple</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/purple</item>
         <item name="colorSecondaryVariant">@color/purple</item>
@@ -17,13 +18,13 @@
         <item name="colorOnError">@color/white</item>
     </style>
 
-    <style name="MainMenuTextView" parent="Widget.MaterialComponents.TextView">
-        <item name="android:textSize">48sp</item>
+    <style name="FragmentMainMenuTextView" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textSize">@dimen/main_menu_text_view_size</item>
         <item name="android:textColor">@color/purple</item>
     </style>
 
-    <style name="MainMenuButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="android:textSize">24sp</item>
+    <style name="FragmentMainMenuButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:textSize">@dimen/main_menu_button_text_size</item>
         <item name="android:paddingStart">20dp</item>
         <item name="android:paddingEnd">20dp</item>
     </style>
@@ -34,5 +35,20 @@
 
     <style name="MainMenuCategoryButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">@color/purple</item>
+    </style>
+
+    <style name="FragmentQuestionTextStyle">
+        <item name="android:textSize">@dimen/question_text_size</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="FragmentQuestionButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:textSize">@dimen/question_button_text_size</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="FragmentQuizTextViewsStyle">
+        <item name="android:textSize">@dimen/list_item_text_size</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 </resources>

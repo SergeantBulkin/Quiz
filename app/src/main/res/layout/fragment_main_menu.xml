@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/main_menu_quiz_text"
-        style="@style/MainMenuTextView"
+        style="@style/FragmentMainMenuTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/main_menu_tet_quiz"
@@ -33,7 +33,7 @@
 
     <Button
         android:id="@+id/main_menu_play_button"
-        style="@style/MainMenuButtonStyle"
+        style="@style/FragmentMainMenuButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/main_menu_play_button"
@@ -44,7 +44,7 @@
 
     <Button
         android:id="@+id/main_menu_exit_button"
-        style="@style/MainMenuButtonStyle"
+        style="@style/FragmentMainMenuButtonStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/main_menu_exit_button"

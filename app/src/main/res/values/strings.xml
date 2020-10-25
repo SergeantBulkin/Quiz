@@ -6,4 +6,6 @@
     <string name="main_menu_play_button">Играть</string>
     <string name="main_menu_exit_button">Выход</string>
     <string name="main_menu_category_text">Категория</string>
+    <string name="quiz_andweted_text">Отвечено</string>
+    <string name="quiz_correct_andweted_text">Правильных</string>
 </resources>
