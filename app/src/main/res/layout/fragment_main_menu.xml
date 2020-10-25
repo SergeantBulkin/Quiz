@@ -82,7 +82,7 @@
 
     <Button
         android:id="@+id/main_menu_category_button"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
+        style="@style/MainMenuCategoryButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Машины"
