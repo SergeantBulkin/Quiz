@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment, new MainMenuFragment(), MainMenuFragment.TAG)
-                .addToBackStack(null)
                 .commit();
     }
 }

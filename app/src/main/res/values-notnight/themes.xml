@@ -45,6 +45,8 @@
     <style name="FragmentQuestionButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:textSize">@dimen/question_button_text_size</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginStart">@dimen/question_button_answer_margin</item>
+        <item name="android:layout_marginEnd">@dimen/question_button_answer_margin</item>
     </style>
 
     <style name="FragmentQuizTextViewsStyle">

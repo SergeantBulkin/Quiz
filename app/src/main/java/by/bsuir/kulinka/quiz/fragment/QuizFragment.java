@@ -86,7 +86,6 @@ public class QuizFragment extends Fragment
                         if (binding.viewPagerQuestions.getCurrentItem() == 0)
                         {
                             //Обработка нажатия назад
-                            Log.d("TAG", "handleOnBackPressed");
                             new AlertDialog.Builder(requireContext())
                                     .setTitle("Выход")
                                     .setMessage("Вы действительно хотите выйти?")

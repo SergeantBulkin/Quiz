@@ -86,6 +86,17 @@ public class QuestionFragment extends Fragment
         binding.questionTextView.setText(question.getQuestionText());
 
         List<Answer> answers = question.getAnswers();
+
+        //Запомнить правильный ответ
+        for (Answer answer : answers)
+        {
+            if (answer.getIsCorrect() == 1)
+            {
+                correctAnswer = answer.getAnswerText();
+            }
+        }
+
+        //Переешать
         Collections.shuffle(answers);
 
         //Отобразить ответы
@@ -94,14 +105,7 @@ public class QuestionFragment extends Fragment
         binding.answer3.setText(answers.get(2).getAnswerText());
         binding.answer4.setText(answers.get(3).getAnswerText());
 
-        //Запомнить правильный ответ
-        for (Answer answer : answers)
-        {
-            if (answer.isCorrect())
-            {
-                correctAnswer = answer.getAnswerText();
-            }
-        }
+
     }
     //----------------------------------------------------------------------------------------------
     private void setListeners()
@@ -112,10 +116,12 @@ public class QuestionFragment extends Fragment
             if (binding.answer1.getText().equals(correctAnswer))
             {
                 binding.answer1.setBackgroundColor(Color.GREEN);
+                binding.answer1.setClickable(false);
                 listener.onAnswer(true);
             } else
             {
                 listener.onAnswer(false);
+                binding.answer1.setClickable(false);
                 binding.answer1.setBackgroundColor(Color.RED);
             }
             binding.answer2.setEnabled(false);
@@ -129,10 +135,12 @@ public class QuestionFragment extends Fragment
             if (binding.answer2.getText().equals(correctAnswer))
             {
                 binding.answer2.setBackgroundColor(Color.GREEN);
+                binding.answer2.setClickable(false);
                 listener.onAnswer(true);
             } else
             {
                 listener.onAnswer(false);
+                binding.answer2.setClickable(false);
                 binding.answer2.setBackgroundColor(Color.RED);
             }
             binding.answer1.setEnabled(false);
@@ -146,10 +154,12 @@ public class QuestionFragment extends Fragment
             if (binding.answer3.getText().equals(correctAnswer))
             {
                 binding.answer3.setBackgroundColor(Color.GREEN);
+                binding.answer3.setClickable(false);
                 listener.onAnswer(true);
             } else
             {
                 listener.onAnswer(false);
+                binding.answer3.setClickable(false);
                 binding.answer3.setBackgroundColor(Color.RED);
             }
             binding.answer1.setEnabled(false);
@@ -163,10 +173,12 @@ public class QuestionFragment extends Fragment
             if (binding.answer4.getText().equals(correctAnswer))
             {
                 binding.answer4.setBackgroundColor(Color.GREEN);
+                binding.answer4.setClickable(false);
                 listener.onAnswer(true);
             } else
             {
                 listener.onAnswer(false);
+                binding.answer4.setClickable(false);
                 binding.answer4.setBackgroundColor(Color.RED);
             }
             binding.answer1.setEnabled(false);

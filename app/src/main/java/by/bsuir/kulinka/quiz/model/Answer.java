@@ -7,9 +7,9 @@ public class Answer implements Parcelable
 {
     //----------------------------------------------------------------------------------------------
     String answerText;
-    boolean isCorrect;
+    int isCorrect;
     //----------------------------------------------------------------------------------------------
-    public Answer(String answerText, boolean isCorrect)
+    public Answer(String answerText, int isCorrect)
     {
         this.answerText = answerText;
         this.isCorrect = isCorrect;
@@ -18,7 +18,7 @@ public class Answer implements Parcelable
     protected Answer(Parcel in)
     {
         answerText = in.readString();
-        isCorrect = in.readByte() != 0;
+        isCorrect = in.readInt();
     }
     //----------------------------------------------------------------------------------------------
     public String getAnswerText()
@@ -26,10 +26,11 @@ public class Answer implements Parcelable
         return answerText;
     }
 
-    public boolean isCorrect()
+    public int getIsCorrect()
     {
         return isCorrect;
     }
+
     //----------------------------------------------------------------------------------------------
     public static final Creator<Answer> CREATOR = new Creator<Answer>()
     {
@@ -56,7 +57,7 @@ public class Answer implements Parcelable
     public void writeToParcel(Parcel dest, int flags)
     {
         dest.writeString(answerText);
-        dest.writeByte((byte) (isCorrect ? 1 : 0));
+        dest.writeInt(isCorrect);
     }
     //----------------------------------------------------------------------------------------------
 }

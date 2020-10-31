@@ -6,8 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,16 +20,27 @@ import by.bsuir.kulinka.quiz.R;
 import by.bsuir.kulinka.quiz.adapter.QuestionsAdapter;
 import by.bsuir.kulinka.quiz.databinding.FragmentMainMenuBinding;
 import by.bsuir.kulinka.quiz.model.Answer;
+import by.bsuir.kulinka.quiz.model.DisposableManager;
 import by.bsuir.kulinka.quiz.model.Question;
+import by.bsuir.kulinka.quiz.retrofit.MyServerNetworkService;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainMenuFragment extends Fragment implements CategoryListDialogFragment.CategoryDialogItemListener
 {
     public static final String TAG = "MainMenuFragment";
     //----------------------------------------------------------------------------------------------
     FragmentMainMenuBinding binding;
+    //Адаптер вопросов для ViewPager2
+    QuestionsAdapter questionsAdapter;
     //Список категорий
     ArrayList<String> categories;
+    //Количество вопросов
     int count;
+    //Выбранная категория
+    int selectedCategory;
     //----------------------------------------------------------------------------------------------
     public MainMenuFragment()
     {
@@ -46,7 +61,6 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
         return binding.getRoot();
     }
     //----------------------------------------------------------------------------------------------
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
@@ -61,12 +75,31 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
     //----------------------------------------------------------------------------------------------
     private void init()
     {
-        categories = new ArrayList<>();
-        categories.add("Машины");
-        categories.add("История");
-        categories.add("Искусство");
-        categories.add("Технологии");
-        categories.add("Наука");
+        //Инициализация адаптера
+        questionsAdapter = new QuestionsAdapter(requireActivity());
+
+        //Инициализация списка категорий, если он не существует
+        if (categories == null)
+        {
+            categories = new ArrayList<>();
+        }
+
+        //Если существует и пуст, то добавить
+        if (categories.isEmpty())
+        {
+            categories.add("Машины");
+            categories.add("История");
+            categories.add("Искусство");
+            categories.add("Технологии");
+            categories.add("Наука");
+        }
+
+        //Установить первую категорию выбранной
+        selectedCategory = 1;
+        binding.mainMenuCategoryButton.setText(categories.get(0));
+
+        //Загрузить вопросы для первой категории
+        initQuestions();
     }
     //----------------------------------------------------------------------------------------------
     //Настройка кнопок
@@ -75,7 +108,14 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
         //Слушатель на кнопку "Играть"
         binding.mainMenuPlayButton.setOnClickListener(v ->
         {
-            loadFragment(new QuizFragment(setAdapter(), count), QuizFragment.TAG);
+            //Если в адаптере нет вопрсоов, то ошибка
+            if (questionsAdapter.isEmpty())
+            {
+                showError();
+            } else
+            {
+                loadFragment(new QuizFragment(questionsAdapter, count), QuizFragment.TAG);
+            }
         });
 
         //Слушатель на кнопку "Выход"
@@ -93,52 +133,98 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
     }
     //----------------------------------------------------------------------------------------------
     //Создать адаптер
-    private QuestionsAdapter setAdapter()
+    private void setAdapterQuestions(List<Question> questions)
     {
-        QuestionsAdapter questionsAdapter = new QuestionsAdapter(requireActivity());
-        questionsAdapter.setQuestions(initQuestions());
-        return questionsAdapter;
-    }
+        //Установить загруженные вопросы в адаптер
+        questionsAdapter.setQuestions(questions);
 
-    private List<Question> initQuestions()
+        //После установки вопросов разблокировать Views
+        viewsForDownloadingEnd();
+    }
+    //----------------------------------------------------------------------------------------------
+    //Инициализация вопросов
+    private void initQuestions()
     {
+        //Начало загрузки
+        viewsForDownloadingStart();
+
+        //Создать список вопросов
         List<Question> questions = new ArrayList<>();
 
-        List<Answer> answers1 = new ArrayList<>();
-        answers1.add(new Answer("Ответ 1", false));
-        answers1.add(new Answer("Ответ 2", true));
-        answers1.add(new Answer("Ответ 3", false));
-        answers1.add(new Answer("Ответ 4", false));
-        Question question1 = new Question("Вопрос 1", answers1);
-        questions.add(question1);
+        //Обнулить количество вопросов
+        count = 0;
 
-        List<Answer> answers2 = new ArrayList<>();
-        answers2.add(new Answer("Ответ 5", false));
-        answers2.add(new Answer("Ответ 6", true));
-        answers2.add(new Answer("Ответ 7", false));
-        answers2.add(new Answer("Ответ 8", false));
-        Question question2 = new Question("Вопрос 2", answers2);
-        questions.add(question2);
+        DisposableManager.add(MyServerNetworkService
+                .getInstance()
+                .getJSONApi()
+                .getQuestionsFromCategory(selectedCategory)
+                .subscribeOn(Schedulers.io())
+                .flatMap(Observable::fromIterable)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<Question>()
+                {
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull Question question)
+                    {
+                        questions.add(question);
+                    }
 
-        List<Answer> answers3 = new ArrayList<>();
-        answers3.add(new Answer("Ответ 9", false));
-        answers3.add(new Answer("Ответ 10", true));
-        answers3.add(new Answer("Ответ 11", false));
-        answers3.add(new Answer("Ответ 12", false));
-        Question question3 = new Question("Вопрос 3", answers3);
-        questions.add(question3);
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e)
+                    {
+                        //Показать ошибку
+                        showError();
+                        Log.d("TAG", "Ошибка");
+                        Log.d("TAG", Objects.requireNonNull(e.getMessage()));
 
-        List<Answer> answers4 = new ArrayList<>();
-        answers4.add(new Answer("Ответ 13", false));
-        answers4.add(new Answer("Ответ 14", true));
-        answers4.add(new Answer("Ответ 15", false));
-        answers4.add(new Answer("Ответ 16", false));
-        Question question4 = new Question("Вопрос 4", answers4);
-        questions.add(question4);
-        count = questions.size();
-        return questions;
+                        //Разблокировать Views
+                        viewsForDownloadingEnd();
+
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete()
+                    {
+                        //Количество вопросов
+                        count = questions.size();
+
+                        //Если загруженных вопросов 0
+                        if (count == 0)
+                        {
+                            setAdapterQuestions(null);
+                            //Показать Snackbar с пояснением
+                            Snackbar.make(binding.getRoot(), "Вопросы не найдены", BaseTransientBottomBar.LENGTH_SHORT).show();
+                        } else
+                        {
+                            //Установить загруженные вопросы в адаптер
+                            setAdapterQuestions(questions);
+                        }
+                    }
+                }));
     }
-
+    //----------------------------------------------------------------------------------------------
+    //Начало загрузки
+    private void viewsForDownloadingStart()
+    {
+        //Заблокировать кнопку "Играть"
+        binding.mainMenuPlayButton.setEnabled(false);
+        //Показать ProgressBar загрузки
+        binding.mainMenuProgressBar.setVisibility(View.VISIBLE);
+    }
+    private void viewsForDownloadingEnd()
+    {
+        //Разблокировать кнопку "Играть"
+        binding.mainMenuPlayButton.setEnabled(true);
+        //Скрыть ProgressBar загрузки
+        binding.mainMenuProgressBar.setVisibility(View.GONE);
+    }
+    private void showError()
+    {
+        Snackbar.make(binding.getRoot(), "Ошибка", BaseTransientBottomBar.LENGTH_INDEFINITE)
+                .setAction("Повторить", v -> initQuestions())
+                .show();
+    }
     //----------------------------------------------------------------------------------------------
     //Загрузить нужный фрагмент
     private void loadFragment(Fragment fragment, String tag)
@@ -150,7 +236,14 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
     @Override
     public void categorySelected(int index)
     {
+        //Установить выбранную категорию на кнопку
         binding.mainMenuCategoryButton.setText(categories.get(index));
+
+        //Запомнить выбранную категорию
+        selectedCategory = index + 1;
+
+        //Загрузить вопросы
+        initQuestions();
     }
     //----------------------------------------------------------------------------------------------
 }

@@ -1,6 +1,5 @@
 package by.bsuir.kulinka.quiz.adapter;
 
-import android.util.Log;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,8 +18,7 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
     private int answeredCountInt = 0;
     private int correctAnswersCountInt = 0;
     private TextView correctAnswersCountTextView;
-    private TextView answeredCount;
-    private TextView correctAnsweredCount;
+    private TextView answersCountTextView;
     //----------------------------------------------------------------------------------------------
     public QuestionsAdapter(@NonNull FragmentActivity fragmentActivity)
     {
@@ -35,7 +33,7 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
     public void setCorrectAnswersCountTextView(TextView correctAnswersCountTextView, TextView answeredCount)
     {
         this.correctAnswersCountTextView = correctAnswersCountTextView;
-        this.answeredCount = answeredCount;
+        this.answersCountTextView = answeredCount;
     }
     //----------------------------------------------------------------------------------------------
     @NonNull
@@ -52,16 +50,28 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
         return 0;
     }
     //----------------------------------------------------------------------------------------------
+    //Проверить список вопросов
+    public boolean isEmpty()
+    {
+        if (questionList == null) return true;
+        return questionList.isEmpty();
+    }
+    //----------------------------------------------------------------------------------------------
+    //Вызывается при ответе
     @Override
     public void onAnswer(boolean isCorrect)
     {
+        //Если ответ верный
         if (isCorrect)
-        {
+        {   //Инкремент количества правильно отвеченных
             correctAnswersCountInt++;
+            //Отобразить количество
             correctAnswersCountTextView.setText(String.valueOf(correctAnswersCountInt));
         }
+        //Инкремент отвеченных
         answeredCountInt++;
-        answeredCount.setText(String.valueOf(answeredCountInt));
+        //Отобразить количество
+        answersCountTextView.setText(String.valueOf(answeredCountInt));
     }
     //----------------------------------------------------------------------------------------------
 }
