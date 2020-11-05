@@ -19,6 +19,8 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
     private int correctAnswersCountInt = 0;
     private TextView correctAnswersCountTextView;
     private TextView answersCountTextView;
+    //Объект интерфейса для показа рекламы
+    private AdMobInterface listener;
     //----------------------------------------------------------------------------------------------
     public QuestionsAdapter(@NonNull FragmentActivity fragmentActivity)
     {
@@ -29,11 +31,17 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
     {
         this.questionList = questions;
     }
-
+    //----------------------------------------------------------------------------------------------
     public void setCorrectAnswersCountTextView(TextView correctAnswersCountTextView, TextView answeredCount)
     {
         this.correctAnswersCountTextView = correctAnswersCountTextView;
         this.answersCountTextView = answeredCount;
+    }
+    //----------------------------------------------------------------------------------------------
+    //Установить слушателя, который покажет рекламу
+    public void setListener(AdMobInterface listener)
+    {
+        this.listener = listener;
     }
     //----------------------------------------------------------------------------------------------
     @NonNull
@@ -70,8 +78,19 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
         }
         //Инкремент отвеченных
         answeredCountInt++;
+        //Если отвечены все вопросы, то показать рекламу
+        if (answeredCountInt == questionList.size())
+        {
+            listener.showAdMob();
+        }
         //Отобразить количество
         answersCountTextView.setText(String.valueOf(answeredCountInt));
+    }
+    //----------------------------------------------------------------------------------------------
+    //Интерфейс для сообщения MainMenuFragment о показе рекламы
+    public interface AdMobInterface
+    {
+        void showAdMob();
     }
     //----------------------------------------------------------------------------------------------
 }

@@ -6,6 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,6 +31,8 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.google.android.gms.ads.AdRequest.DEVICE_ID_EMULATOR;
 
 public class MainMenuFragment extends Fragment implements CategoryListDialogFragment.CategoryDialogItemListener
 {
@@ -71,6 +77,9 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
 
         //Настройка кнопок
         setUpButtons();
+
+        //Инициализация рекламы
+        MobileAds.initialize(requireActivity(), code -> Log.d("TAG", "Инициализация рекламы во фрагменте"));
     }
     //----------------------------------------------------------------------------------------------
     private void init()
@@ -137,6 +146,9 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
     {
         //Установить загруженные вопросы в адаптер
         questionsAdapter.setQuestions(questions);
+
+        //Установить слушателя для показа рекламы
+        questionsAdapter.setListener(this::showAdMob);
 
         //После установки вопросов разблокировать Views
         viewsForDownloadingEnd();
@@ -230,6 +242,25 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
     private void loadFragment(Fragment fragment, String tag)
     {
         requireFragmentManager().beginTransaction().replace(R.id.fragment, fragment, tag).addToBackStack(TAG).commit();
+    }
+    //----------------------------------------------------------------------------------------------
+    //Показать рекламу
+    public void showAdMob()
+    {
+        Log.d("TAG", "Показ рекламы");
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(DEVICE_ID_EMULATOR).build();
+        InterstitialAd interstitialAd = new InterstitialAd(requireContext());
+        interstitialAd.setAdUnitId("ca-app-pub-8501671653071605/2568258533");
+        interstitialAd.loadAd(adRequest);
+        interstitialAd.setAdListener(new AdListener()
+        {
+            @Override
+            public void onAdLoaded()
+            {
+                Log.d("TAG", "Загружена");
+                interstitialAd.show();
+            }
+        });
     }
     //----------------------------------------------------------------------------------------------
     //Метод интерфейса CategoryDialogItemListener
