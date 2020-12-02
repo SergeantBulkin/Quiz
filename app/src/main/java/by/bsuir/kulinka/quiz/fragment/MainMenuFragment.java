@@ -23,7 +23,6 @@ import androidx.fragment.app.Fragment;
 import by.bsuir.kulinka.quiz.R;
 import by.bsuir.kulinka.quiz.adapter.QuestionsAdapter;
 import by.bsuir.kulinka.quiz.databinding.FragmentMainMenuBinding;
-import by.bsuir.kulinka.quiz.model.Answer;
 import by.bsuir.kulinka.quiz.model.DisposableManager;
 import by.bsuir.kulinka.quiz.model.Question;
 import by.bsuir.kulinka.quiz.retrofit.MyServerNetworkService;
@@ -31,8 +30,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.google.android.gms.ads.AdRequest.DEVICE_ID_EMULATOR;
 
 public class MainMenuFragment extends Fragment implements CategoryListDialogFragment.CategoryDialogItemListener
 {
@@ -120,10 +117,11 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
             //Если в адаптере нет вопрсоов, то ошибка
             if (questionsAdapter.isEmpty())
             {
-                showError();
+                //Показать Snackbar с пояснением
+                Snackbar.make(binding.getRoot(), "Вопросы не найдены", Snackbar.LENGTH_SHORT).show();
             } else
             {
-                loadFragment(new QuizFragment(questionsAdapter, count), QuizFragment.TAG);
+                loadFragment(new QuizFragment(questionsAdapter, count));
             }
         });
 
@@ -206,7 +204,7 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
                         {
                             setAdapterQuestions(null);
                             //Показать Snackbar с пояснением
-                            Snackbar.make(binding.getRoot(), "Вопросы не найдены", BaseTransientBottomBar.LENGTH_SHORT).show();
+                            Snackbar.make(binding.getRoot(), "Вопросы не найдены", Snackbar.LENGTH_SHORT).show();
                         } else
                         {
                             //Установить загруженные вопросы в адаптер
@@ -239,16 +237,16 @@ public class MainMenuFragment extends Fragment implements CategoryListDialogFrag
     }
     //----------------------------------------------------------------------------------------------
     //Загрузить нужный фрагмент
-    private void loadFragment(Fragment fragment, String tag)
+    private void loadFragment(Fragment fragment)
     {
-        requireFragmentManager().beginTransaction().replace(R.id.fragment, fragment, tag).addToBackStack(TAG).commit();
+        requireFragmentManager().beginTransaction().replace(R.id.fragment, fragment, QuizFragment.TAG).addToBackStack(TAG).commit();
     }
     //----------------------------------------------------------------------------------------------
     //Показать рекламу
     public void showAdMob()
     {
         Log.d("TAG", "Показ рекламы");
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice(DEVICE_ID_EMULATOR).build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         InterstitialAd interstitialAd = new InterstitialAd(requireContext());
         interstitialAd.setAdUnitId("ca-app-pub-8501671653071605/2568258533");
         interstitialAd.loadAd(adRequest);

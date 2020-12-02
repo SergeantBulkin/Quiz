@@ -34,7 +34,6 @@ public class QuizFragment extends Fragment
     FragmentQuizBinding binding;
     int questionsCountInt;
     //----------------------------------------------------------------------------------------------
-    public QuizFragment () {}
     public QuizFragment(QuestionsAdapter adapter, int questionsCount)
     {
         this.adapter = adapter;
@@ -68,7 +67,16 @@ public class QuizFragment extends Fragment
         //Установка адаптера
         adapter.setCorrectAnswersCountTextView(binding.fragmentQuizCorrectAnsweredCount, binding.fragmentQuizAnsweredCount);
         binding.viewPagerQuestions.setAdapter(adapter);
-
+        //Слушатель за изменением страниц
+        binding.viewPagerQuestions.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback()
+        {
+            @Override
+            public void onPageSelected(int position)
+            {
+                //Запомнить в адаптер текущую позицию
+                adapter.setCurrentPosition(position);
+            }
+        });
         //Установить количество вопросов
         binding.fragmentQuizQuestionsCount.setText(String.valueOf(questionsCountInt));
         binding.fragmentQuizQuestionsCount2.setText(String.valueOf(questionsCountInt));

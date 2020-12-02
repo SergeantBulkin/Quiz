@@ -129,6 +129,7 @@ public class CategoryListDialogFragment extends BottomSheetDialogFragment
     }
     //----------------------------------------------------------------------------------------------
     //Интерфейс для выбора категории
+    //Имплементируется MainMenuFragment
     public interface CategoryDialogItemListener
     {
         void categorySelected(int index);

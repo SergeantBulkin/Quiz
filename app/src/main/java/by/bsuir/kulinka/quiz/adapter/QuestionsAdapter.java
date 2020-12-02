@@ -2,6 +2,7 @@ package by.bsuir.kulinka.quiz.adapter;
 
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -14,9 +15,16 @@ import by.bsuir.kulinka.quiz.model.Question;
 public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFragment.OnAnsweredListener
 {
     //----------------------------------------------------------------------------------------------
+    //Список вопросов
     private List<Question> questionList;
+    //Количество отвеченных вопросов
     private int answeredCountInt = 0;
+    //Количество правильно отвеченных вопросов
     private int correctAnswersCountInt = 0;
+    //Коды отвеченных вопросов
+    List<Integer> answeredCodes;
+    //Текущая позиция
+    private int currentPosition = 0;
     private TextView correctAnswersCountTextView;
     private TextView answersCountTextView;
     //Объект интерфейса для показа рекламы
@@ -27,15 +35,31 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
         super(fragmentActivity);
     }
     //----------------------------------------------------------------------------------------------
+    //Установить вопросы в адаптер
     public void setQuestions(List<Question> questions)
     {
         this.questionList = questions;
+        //Инициализация массива нулей
+        answeredCodes = new ArrayList<>();
+        if (questionList != null)
+        {
+            for (int i = 0; i < questionList.size(); i++)
+            {
+                answeredCodes.add(0);
+            }
+        }
     }
     //----------------------------------------------------------------------------------------------
     public void setCorrectAnswersCountTextView(TextView correctAnswersCountTextView, TextView answeredCount)
     {
         this.correctAnswersCountTextView = correctAnswersCountTextView;
         this.answersCountTextView = answeredCount;
+    }
+    //----------------------------------------------------------------------------------------------
+    //Установить текущую позицию
+    public void setCurrentPosition(int currentPosition)
+    {
+        this.currentPosition = currentPosition;
     }
     //----------------------------------------------------------------------------------------------
     //Установить слушателя, который покажет рекламу
@@ -48,7 +72,7 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
     @Override
     public Fragment createFragment(int position)
     {
-        return QuestionFragment.newInstance(questionList.get(position), this);
+        return QuestionFragment.newInstance(questionList.get(position), this, answeredCodes.get(position));
     }
     //----------------------------------------------------------------------------------------------
     @Override
@@ -67,7 +91,7 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
     //----------------------------------------------------------------------------------------------
     //Вызывается при ответе
     @Override
-    public void onAnswer(boolean isCorrect)
+    public void onAnswer(boolean isCorrect, int code)
     {
         //Если ответ верный
         if (isCorrect)
@@ -85,9 +109,12 @@ public class QuestionsAdapter extends FragmentStateAdapter implements QuestionFr
         }
         //Отобразить количество
         answersCountTextView.setText(String.valueOf(answeredCountInt));
+
+        answeredCodes.set(currentPosition, code);
     }
     //----------------------------------------------------------------------------------------------
-    //Интерфейс для сообщения MainMenuFragment о показе рекламы
+    //Интерфейс для сообщения о показе рекламы
+    //Слушатель - MainMenuFragment
     public interface AdMobInterface
     {
         void showAdMob();
